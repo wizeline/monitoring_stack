@@ -10,7 +10,6 @@ services:
       - prometheus-data:/prometheus
     command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
 
-
   grafana:
     image: grafana/grafana:8.2.2
     ports:
@@ -37,11 +36,63 @@ services:
       PROM2TEAMS_CONNECTOR: "https://og2gether.webhook.office.com/webhookb2/b5370781-89c2-45ba-be14-453e29dfb0a9@8794e153-c3bd-4479-8bea-61aeaf167d5a/IncomingWebhook/57e69e8f10dd49ce8dae3b816159e228/4eb361c9-e566-4b66-ab30-bed630f495a5"
     ports:
       - 8089:8089
+  openweathermap:
+    build:
+      context: .
+      dockerfile: docker-files/openweathermap/Dockerfile
+    container_name: openweathermap
+    hostname: openweathermap
+    ports:
+      - "2112:2112"
+    environment:
+      - OWM_PORT=${OWM_PORT}
+      - OWM_API_KEY=${OWM_API_KEY}
+      - OWM_LOCATION=${OWM_LOCATION}
+    expose:
+      - 2112
+    restart: always
+    labels:
+      description: "container to pull weather info for specified locations"
+
+  mariadb:
+    image: mariadb:10.3
+    container_name: mariadb
+    volumes:
+      - container-volume:/var/lib/mysql
+      - ./sql/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    environment:
+      - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
+      - "MYSQL_USER=${MYSQL_USER}"
+      - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
+      - MYSQL_DATABASE:${DATABASE_NAME}
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "${MYSQL_SERVER_NAME}" ]
+      timeout: 10s
+      retries: 10
+    ports:
+      - "3306:3306"
+    expose:
+      - 3306
+
+  sensorsexporter:
+    build:
+      context: .
+      dockerfile: ./docker-files/sensors/Dockerfile
+    container_name: sensorsexporter
+    hostname: sensorsexporter
+    ports:
+      - "2111:2111"
+    environment:
+      - SENSORS_API_URL=${SENSORS_API_URL}
+    expose:
+      - 2111
+    restart: always
+    labels:
+      description: "container to pull weather info from sensors"
 
 
 volumes:
   prometheus-data:
-
   grafana-data:
-
   alertmanager-data:
+  container-volume:

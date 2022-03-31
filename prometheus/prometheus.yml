@@ -1,5 +1,5 @@
 global:
-  scrape_interval: 30s
+  scrape_interval: 60s
   scrape_timeout: 10s
 
 rule_files:
@@ -16,7 +16,6 @@ scrape_configs:
     metrics_path: /metrics
     static_configs:
       - targets:
-          - 'prometheus:9090'
-          - 'idonotexists:564'
-
+          - 'openweathermap:2112'
+          - 'sensorsexporter:2111'
 

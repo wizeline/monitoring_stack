@@ -17,14 +17,14 @@ route:
 receivers:
   - name: 'mail'
     email_configs:
-      - smarthost: 'yourmailhost.com:465'
-        auth_username: 'yourmail@yourmailhost.com'
-        auth_password: "your mail password"
-        from: 'yourmail@yourmailhost.com'
-        to: 'someonesmail@yourmailhost.com'
+      - smarthost: ${EMAILING_HOST}
+        auth_username: ${EMAILING_USER}
+        auth_password: ${EMAILING_PASSWORD}
+        from: ${EMAILING_FROM}
+        to: ${EMAILING_TO}
         require_tls: false
 
   - name: 'teams'
     webhook_configs:
-      - url: "http://prom2teams:8089"
+      - url: 'http://prom2teams:8089"
         send_resolved: true
