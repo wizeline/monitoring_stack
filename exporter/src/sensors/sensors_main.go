@@ -5,14 +5,6 @@
         "log"
         "net/http"
         "time"
-
-    /*
-    // Once I learn go, I need to change this again, to cycle through locations -
-    // perhaps with import "strconv"
-    // s := strconvItoa(97)  // convert int to string
-    // 3128760:4259418:5879400:4907985:4043416:1269843
-    // Barcelona, Indianapolis, IN : Anchorage, AK : Rockton, IL : Guam : Hyderabad, India
-    */
         "github.com/caarlos0/env"
         "github.com/prometheus/client_golang/prometheus"
         "github.com/prometheus/client_golang/prometheus/promauto"
@@ -86,12 +78,6 @@
                         log.Fatal(jsonErr)
                     }
                     fmt.Println("Struct is:", sensorsOutput)
-                    fmt.Println(sensorsOutput.Temperature)
-                    fmt.Println(sensorsOutput.Humidity)
-//                     fmt.Println(sensorsOutput.Light)
-                    fmt.Println(sensorsOutput.Gasanalog)
-                    fmt.Println(sensorsOutput.Gasdigital)
-
 
                     temp.WithLabelValues(sensor_location).Set(float64(sensorsOutput.Temperature))
                     humidity.WithLabelValues(sensor_location).Set(float64(sensorsOutput.Humidity))
@@ -164,14 +150,6 @@
         prometheus.Register(gasa)
         prometheus.Register(gasd)
         prometheus.Register(timezone)
-//         prometheus.Register(light)
-
-//                             fmt.Println("Struct is:", sensorsOutput)
-//                             fmt.Println(sensorsOutput.Temperature)
-//                             fmt.Println(sensorsOutput.Humidity)
-//                             fmt.Println(sensorsOutput.Light)
-//                             fmt.Println(sensorsOutput.Gasanalog)
-//                             fmt.Println(sensorsOutput.Gasdigital)
 
         errC := loadMetrics(context.TODO(), cfg.APIUrl, sensor_location_number)
         go func() {

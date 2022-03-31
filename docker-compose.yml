@@ -27,7 +27,13 @@ services:
     volumes:
       - "./alertmanager:/config"
       - alertmanager-data:/data
-    command: --config.file=/config/alertmanager.yml --log.level=debug 
+    environment:
+      - EMAILING_HOST=${EMAILING_HOST}
+      - EMAILING_USER=${EMAILING_USER}
+      - EMAILING_PASSWORD=${EMAILING_PASSWORD}
+      - EMAILING_FROM=${EMAILING_FROM}
+      - EMAILING_TO=${EMAILING_TO}
+    command: --config.file=/config/alertmanager.yml --log.level=debug
 
   prom2teams:
     image: idealista/prom2teams:3.2.3
